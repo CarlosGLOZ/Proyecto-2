@@ -106,12 +106,12 @@
 <!-- Modal Comensales -->
 <div id="modal-comensales-container" class="modal-container">
     <div class="modal-box">
-        <form action="../proc/cambiar_estado_mesa.php" method="post">
+        <form action="../proc/cambiar_estado_mesa.php" method="post" class="modal-form" id='modal-form-ocupar'>
             <h3 style="text-align: center">Introduce los comensales:</h3>
             <input type="hidden" name="<?php echo BD['MESA']['ID']?>" id="id_mesa_modal_comensales">
             <input type="hidden" name="<?php echo BD['MESA']['ESTADO']?>" value="1">
             <input type="number" name="<?php echo BD['REGISTRO']['COMENSALES']?>" placeholder='Comensales' style="width:50%" max="10" min="1">
-            <input type="submit" class="btn btn-outline-success" value="Guardar">
+            <button class="btn btn-outline-success modal-form-submit-button" onclick="ocuparMesa()">Guardar</button>
         </form>
         <button class="btn btn-outline-danger" onclick="cerrarModales()">Cancelar</button>
     </div>
@@ -121,12 +121,12 @@
 <!-- Modal Mantenimiento-->
 <div id="modal-mantenimiento-container" class="modal-container">
     <div class="modal-box">
-        <form action="../proc/cambiar_estado_mesa.php" method="post">
+        <form action="../proc/cambiar_estado_mesa.php" method="post" class="modal-form" id="modal-form-mantenimiento">
         <h3 style="text-align: center">Introduce el motivo de la incidencia:</h3>
             <input type="hidden" name="<?php echo BD['MESA']['ID']?>" id="id_mesa_modal_mantenimineto">
             <input type="hidden" name="<?php echo BD['MESA']['ESTADO']?>" value="2">
             <input type="text" name="<?php echo BD['INCIDENCIA']['NOMBRE']?>" placeholder="Descripcion incidencia">
-            <input type="submit" class="btn btn-outline-success" value="Guardar">
+            <button class="btn btn-outline-success modal-form-submit-button" onclick="mantenimientoMesa()">Guardar</button>
         </form>
         <button class="btn btn-outline-danger" onclick="cerrarModales()">Cancelar</button>
     </div>
@@ -136,11 +136,11 @@
 <!-- Modal Liberar-->
 <div id="modal-liberar-container" class="modal-container">
     <div class="modal-box">
-        <form action="../proc/cambiar_estado_mesa.php" method="post">
+        <form action="../proc/cambiar_estado_mesa.php" method="post" class="modal-form" id="modal-form-liberar">
             <input type="hidden" name="<?php echo BD['MESA']['ID']?>" id="id_mesa_modal_liberar">
             <input type="hidden" name="<?php echo BD['MESA']['ESTADO']?>" value="0">
             <h3 style="text-align: center">¿Estás seguro?</h3>
-            <input type="submit" class="btn btn-outline-success" value="Sí">
+            <button class="btn btn-outline-success modal-form-submit-button" onclick="liberarMesa()">Sí</button>
         </form>
         <button class="btn btn-outline-danger" onclick="cerrarModales()">Cancelar</button>
     </div>
@@ -161,6 +161,6 @@
 <script src="../static/js/cargar_ajax.js"></script>
 <!-- <script src="../static/js/ajax/crear.js"></script>
 <script src="../static/js/ajax/listar.js"></script> -->
-<script src="../static/js/establecer_filtro_sala.js"></script>
+<script src="../static/js/ajax_default.js"></script>
 </body>
 </html>

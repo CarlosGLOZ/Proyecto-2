@@ -124,21 +124,37 @@ class Mesa
         // Recoger todas las mesas
         $sql = "SELECT * FROM ".BD['REGISTRO']['TABLA']." WHERE 1=1";
 
-        // aplicar filtros
+        // aplicar filtros y añadirlos a la lista de parametros de la query
+        $params = [];
         foreach ($filtros as $key => $value) {
-            $sql = $sql." AND ".FILTROS['BD'][$key]." = $value";
+            if (gettype($value) != 'string') {
+                $sql = $sql." AND ".FILTROS['BD'][$key]." = :$key";
+                $params[$key] = $value;
+            } else {
+                $sql = $sql." AND ".FILTROS['BD'][$key]." LIKE :$key";
+                $params["'".$key."%'"] = $value;
+            }
         }
 
         $sql = $sql." ORDER BY ".BD['REGISTRO']['ID']." DESC;";
 
-        return mysqli_query($pdo, $sql);
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute($params);
+        // $consulta -> debugDumpParams();
+        $result = $consulta -> fetchAll(PDO::FETCH_ASSOC);
+
+        return $result;
     }
 
     public static function mesaExiste($pdo, $mesa)
     {
-        $sql = "SELECT COUNT(1) AS num_mesas FROM ".BD['MESA']['TABLA']." WHERE ".BD['MESA']['ID']." = $mesa;";
+        $sql = "SELECT COUNT(1) AS num_mesas FROM ".BD['MESA']['TABLA']." WHERE ".BD['MESA']['ID']." = :id_mesa;";
 
-        if (mysqli_fetch_assoc(mysqli_query($pdo, $sql))['num_mesas'] < 1) {
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute(['id_mesa' => $mesa]);
+        $result = $consulta -> fetch(PDO::FETCH_ASSOC)['num_mesas'];
+
+        if ($result < 1) {
             return false;
         }
         return true;
@@ -147,8 +163,15 @@ class Mesa
     public static function cambiarEstadoMesa($pdo, $id_mesa, $estado_mesa)
     {
         //  Cambiar el estado de la mesa en la tabla mesa
-        $sql = "UPDATE ".BD['MESA']['TABLA']." SET ".BD['MESA']['ESTADO']." = '$estado_mesa' WHERE ".BD['MESA']['ID']." = $id_mesa";
-        return mysqli_query($pdo, $sql);
+        $sql = "UPDATE ".BD['MESA']['TABLA']." SET ".BD['MESA']['ESTADO']." = :estado_mesa WHERE ".BD['MESA']['ID']." = :id_mesa";
+        
+        $consulta = $pdo -> prepare($sql);
+        $result = $consulta -> execute([
+            'id_mesa' => $id_mesa,
+            'estado_mesa' => $estado_mesa
+        ]);
+        
+        return $result;
     }
 
     public static function crearRegistroMesa($pdo, $id_mesa, $comensales)
@@ -157,76 +180,119 @@ class Mesa
         $sql = "
             INSERT INTO ".BD['REGISTRO']['TABLA']." 
             (".BD['REGISTRO']['ID'].", ".BD['REGISTRO']['FECHAENTRADA'].", ".BD['REGISTRO']['FECHASALIDA'].", ".BD['REGISTRO']['MESA'].", ".BD['REGISTRO']['CAMARERO'].", ".BD['REGISTRO']['COMENSALES'].")
-            VALUES(NULL, '".date('Y-m-d H:i:s')."', NULL, $id_mesa, ".$_SESSION['USER'][BD['EMPLEADO']['ID']].", $comensales)
+            VALUES(NULL, :fecha, NULL, :id_mesa, :id_empleado, :comensales)
         ;";
+
+        $consulta = $pdo -> prepare($sql);
+        $result = $consulta -> execute([
+            'fecha' => date('Y-m-d H:i:s'),
+            'id_mesa' => $id_mesa,
+            'id_empleado' => $_SESSION['USER'][BD['EMPLEADO']['ID']],
+            'comensales' => $comensales
+        ]);
         
-        return mysqli_query($pdo, $sql);
+        return $result;
     }
 
     public static function cerrarRegistroMesa($pdo, $id_mesa)
     {
-        $id_registro = Mesa::getRegistrosAbiertos($pdo, $id_mesa)[0][BD['REGISTRO']['ID']];
+        $id_registro = Mesa::getRegistrosAbiertos($pdo, $id_mesa)[BD['REGISTRO']['ID']];
 
         $sql = "
             UPDATE ".BD['REGISTRO']['TABLA']."
             SET ".BD['REGISTRO']['FECHASALIDA']." = '".date('Y-m-d H:i:s')."'
-            WHERE ".BD['REGISTRO']['ID']." = $id_registro
+            WHERE ".BD['REGISTRO']['ID']." = :id_registro
         ;";
 
-        return mysqli_query($pdo, $sql);
+        $consulta = $pdo -> prepare($sql);
+        $result = $consulta -> execute([
+            'id_registro' =>$id_registro,
+        ]);
+        
+        return $result;
     }
 
     public static function crearIncidenciaMesa($pdo, $id_mesa, $descripcion)
     {
         $sql = "
             INSERT INTO ".BD['INCIDENCIA']['TABLA']."(".BD['INCIDENCIA']['ID'].", ".BD['INCIDENCIA']['NOMBRE'].", ".BD['INCIDENCIA']['ESTADO'].", ".BD['INCIDENCIA']['MESA'].")
-            VALUES (NULL, '".mysqli_real_escape_string($pdo, trim(strip_tags($descripcion)))."', 1, $id_mesa)
+            VALUES (NULL, :nombre, 1, :id_mesa)
         ;";
+
+        $consulta = $pdo -> prepare($sql);
+        $result = $consulta -> execute([
+            'nombre' => $descripcion,
+            'id_mesa' => $id_mesa,
+        ]);
         
-        return mysqli_query($pdo, $sql);
+        return $result;
     }
 
     public static function cerrarIncidenciaMesa($pdo, $id_mesa)
     {
         $id_incidencia = Mesa::getIncidenciaActivaDeMesa($pdo, $id_mesa)[BD['INCIDENCIA']['ID']];
 
-        $sql = "UPDATE ".BD['INCIDENCIA']['TABLA']." SET ".BD['INCIDENCIA']['ESTADO']." = 0 WHERE ".BD['INCIDENCIA']['ID']." = $id_incidencia;";
+        $sql = "UPDATE ".BD['INCIDENCIA']['TABLA']." SET ".BD['INCIDENCIA']['ESTADO']." = 0 WHERE ".BD['INCIDENCIA']['ID']." = :id_incidencia;";
 
-        return mysqli_query($pdo, $sql);
+        $consulta = $pdo -> prepare($sql);
+        $result = $consulta -> execute([
+            'id_incidencia' =>$id_incidencia,
+        ]);
+        
+        return $result;
     }
 
     public static function getMaxComensales($pdo, $id_mesa)
     {
-        $sql = "SELECT ".BD['MESA']['CAPACIDAD']." AS capacidad FROM ".BD['MESA']['TABLA']." WHERE ".BD['MESA']['ID']." = $id_mesa;";
+        $sql = "SELECT ".BD['MESA']['CAPACIDAD']." AS capacidad FROM ".BD['MESA']['TABLA']." WHERE ".BD['MESA']['ID']." = :id_mesa;";
 
-        return mysqli_fetch_assoc(mysqli_query($pdo, $sql))['capacidad'];
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute(['id_mesa' => $id_mesa]);
+        $result = $consulta -> fetch(PDO::FETCH_ASSOC)['capacidad'];
+
+        return $result;
     }
 
     public static function getRegistrosAbiertos($pdo, $id_mesa)
     {
-        $sql = "SELECT * FROM ".BD['REGISTRO']['TABLA']." WHERE ".BD['REGISTRO']['MESA']." = $id_mesa AND ".BD['REGISTRO']['FECHASALIDA']." IS NULL ORDER BY ".BD['REGISTRO']['ID']." DESC;";
+        $sql = "SELECT * FROM ".BD['REGISTRO']['TABLA']." WHERE ".BD['REGISTRO']['MESA']." = :id_mesa AND ".BD['REGISTRO']['FECHASALIDA']." IS NULL ORDER BY ".BD['REGISTRO']['ID']." DESC;";
 
-        $array = [];
-        foreach (mysqli_query($pdo, $sql) as $key => $value) {
-            array_push($array, $value);
-        }
-        
-        return $array;
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute(['id_mesa' => $id_mesa]);
+        // Hacer fetch() para que devuelva el último registro en forma de array único
+        $result = $consulta -> fetch();
+
+        return $result;
     }
 
     public static function getEstadoMesa($pdo, $id_mesa) 
     {
-        $sql = "SELECT ".BD['MESA']['ESTADO']." AS estado FROM ".BD['MESA']['TABLA']." WHERE ".BD['MESA']['ID']." = $id_mesa;";
+        $sql = "SELECT ".BD['MESA']['ESTADO']." AS estado FROM ".BD['MESA']['TABLA']." WHERE ".BD['MESA']['ID']." = :id_mesa;";
+        
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute(['id_mesa' => $id_mesa]);
+        // $consulta ->debugDumpParams();
+        // die();
 
-        return mysqli_fetch_assoc(mysqli_query($pdo, $sql))['estado'];
+        $result = $consulta -> fetch(PDO::FETCH_ASSOC)['estado'];
+
+        return $result;
     }
 
     public static function getIncidenciaActivaDeMesa($pdo, $id_mesa)
     {
-        $sql = "SELECT * FROM ".BD['INCIDENCIA']['TABLA']." WHERE ".BD['INCIDENCIA']['MESA']." = $id_mesa AND ".BD['INCIDENCIA']['ESTADO']." = 1;";
-        // echo $sql;
+        $sql = "SELECT * FROM ".BD['INCIDENCIA']['TABLA']." WHERE ".BD['INCIDENCIA']['MESA']." = :id_mesa AND ".BD['INCIDENCIA']['ESTADO']." = 1;";
+        
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute([
+            'id_mesa' => $id_mesa,
+        ]);
+        // $consulta ->debugDumpParams();
         // die();
-        return mysqli_fetch_assoc(mysqli_query($pdo, $sql));
+        
+        // Hacer fetch() para que devuelva el último registro en forma de array único
+        $result = $consulta -> fetch();
+        return $result;
     }
 
     public static function validarComensales($pdo, $id_mesa, $comensales)
