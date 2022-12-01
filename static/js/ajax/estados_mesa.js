@@ -1,7 +1,6 @@
-const modal_form_ocupar = document.getElementById('modal-form-ocupar');
-const ocupar_inputs = modal_form_ocupar.getElementsByTagName('input')
-
 function ocuparMesa() {
+    const modal_form_ocupar = document.getElementById('modal-form-ocupar');
+    const ocupar_inputs = modal_form_ocupar.getElementsByTagName('input');
 
     let formData = new FormData();
     // for (const key in filtros) {
@@ -32,10 +31,10 @@ function ocuparMesa() {
     ajax.send(formData);
 }
 
-const modal_form_liberar = document.getElementById('modal-form-liberar');
-const liberar_inputs = modal_form_liberar.getElementsByTagName('input')
 
 function liberarMesa() {
+    const modal_form_liberar = document.getElementById('modal-form-liberar');
+    const liberar_inputs = modal_form_liberar.getElementsByTagName('input')
 
     let formData = new FormData();
     // for (const key in filtros) {
@@ -66,10 +65,10 @@ function liberarMesa() {
     ajax.send(formData);
 }
 
-const modal_form_mantenimiento = document.getElementById('modal-form-mantenimiento');
-const mantenimiento_inputs = modal_form_mantenimiento.getElementsByTagName('input')
 
 function mantenimientoMesa() {
+    const modal_form_mantenimiento = document.getElementById('modal-form-mantenimiento');
+    const mantenimiento_inputs = modal_form_mantenimiento.getElementsByTagName('input')
 
     let formData = new FormData();
     // for (const key in filtros) {

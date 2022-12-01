@@ -14,9 +14,9 @@
     <link rel="stylesheet" href="../static/css/mostrar.css">
     <link rel="stylesheet" href="../static/css/modal_mesas.css">
     <link rel="stylesheet" href="../static/css/filtros.css">
+    <link rel="stylesheet" href="../static/css/extra.css">
 
     <title>Mesas</title>
-    
 </head>
 <body>
 
@@ -74,7 +74,7 @@
             <input type="hidden" name=<?php echo FILTROS['SALA'];?> value="1" onchange="listarMesas()">
 
             <select class="form-select form-select-md" id="<?php echo FILTROS['CAPACIDAD'];?>" onchange="listarMesas()">
-            <option value=''>-</option>
+            <option value=''>Capacidad</option>
                 <?php
                     foreach ($capacidades as $capacidad) {
                         echo "<option value=$capacidad>$capacidad</option>";
@@ -85,7 +85,7 @@
         
         <div class="nav-item">
             <select class="form-select form-select-md" id="<?php echo FILTROS['DISPONIBILIDAD'];?>" onchange="listarMesas()">
-            <option value=''>-</option>
+            <option value=''>Disponibilidad</option>
                 <?php
                     foreach (BD['MESA']['ESTADOS'] as $estado) {
                         echo "<option value=".array_search($estado, BD['MESA']['ESTADOS']).">$estado</option>";
@@ -107,7 +107,7 @@
 <div id="modal-comensales-container" class="modal-container">
     <div class="modal-box">
         <form action="../proc/cambiar_estado_mesa.php" method="post" class="modal-form" id='modal-form-ocupar'>
-            <h3 style="text-align: center">Introduce los comensales:</h3>
+            <h3 style="text-align: center">Comensales:</h3>
             <input type="hidden" name="<?php echo BD['MESA']['ID']?>" id="id_mesa_modal_comensales">
             <input type="hidden" name="<?php echo BD['MESA']['ESTADO']?>" value="1">
             <input type="number" name="<?php echo BD['REGISTRO']['COMENSALES']?>" placeholder='Comensales' style="width:50%" max="10" min="1">
@@ -118,11 +118,28 @@
 </div>
 <!-- /Modal Comensales -->
 
+<!-- Modal Reservar -->
+<div id="modal-reservar-container" class="modal-container">
+    <div class="modal-box" id="modal-box-reservar">
+        <form action="../proc/cambiar_estado_mesa.php" method="post" class="modal-form" id='modal-form-reservar'>
+            <h3 style="text-align: center">Comensales:</h3>
+            <input type="hidden" name="<?php echo BD['MESA']['ID']?>" id="id_mesa_modal_reservar">
+            <input type="hidden" name="<?php echo BD['MESA']['ESTADO']?>" value="3">
+            <input type="number" name="<?php echo BD['REGISTRO']['COMENSALES']?>" placeholder='Comensales' style="width:50%" max="10" min="1">
+            <h3 style="text-align: center">Fecha y hora de reserva:</h3>
+            <input type="datetime-local" name="<?php echo BD['RESERVA']['HORA']?>" placeholder='Fecha y hora' style="width:50%" step="600">
+            <button class="btn btn-outline-success modal-form-submit-button" onclick="reservarMesa()">Guardar</button>
+        </form>
+        <button class="btn btn-outline-danger" onclick="cerrarModales()">Cancelar</button>
+    </div>
+</div>
+<!-- /Modal Reservar -->
+
 <!-- Modal Mantenimiento-->
 <div id="modal-mantenimiento-container" class="modal-container">
     <div class="modal-box">
         <form action="../proc/cambiar_estado_mesa.php" method="post" class="modal-form" id="modal-form-mantenimiento">
-        <h3 style="text-align: center">Introduce el motivo de la incidencia:</h3>
+            <h3 style="text-align: center">Motivo de la incidencia:</h3>
             <input type="hidden" name="<?php echo BD['MESA']['ID']?>" id="id_mesa_modal_mantenimineto">
             <input type="hidden" name="<?php echo BD['MESA']['ESTADO']?>" value="2">
             <input type="text" name="<?php echo BD['INCIDENCIA']['NOMBRE']?>" placeholder="Descripcion incidencia">

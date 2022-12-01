@@ -1,0 +1,48 @@
+.botones-mesa button {
+  margin: 1%;
+}
+#modal-box-reservar {
+  height: 50%;
+}
+.bloque {
+  height: 50%;
+}
+.estado-libre {
+  background-color: rgba(141, 251, 141, 0.634);
+}
+.estado-ocupado {
+  background-color: rgba(251, 141, 141, 0.634);
+}
+.estado-mantenimiento {
+  background-color: rgba(240, 251, 141, 0.634);
+}
+#form-crear-recurso-container {
+  width: 100%;
+}
+#form-crear-recurso {
+  display: flex;
+}
+#form-crear-recurso * {
+  margin-left: 0.5%;
+  margin-right: 0.5%;
+  width: 120px;
+}
+#form-crear-recurso input {
+  border-radius: 6px;
+  border-width: 1px;
+  padding-left: 10px;
+}
+#form-crear-recurso button {
+  width: 50px;
+}
+#form-crear-recurso #error-val-form {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  align-content: center;
+}
+#form-crear-recurso #error-val-form p {
+  margin: 0;
+  color: #f98c8c;
+  user-select: none;
+}

@@ -56,6 +56,8 @@ class Mesa
             return $this -> capacidad == $val;
         }
 
+
+    // Metodos
     public static function getFiltrosMesas($pdo)
     {
         // Recoger los nombres de los filtros de las mesas
@@ -73,7 +75,6 @@ class Mesa
         return $filtros_nombres;
     }
 
-    // Metodos
     public static function getMesas($pdo, $filtros, $campo='*', $json = false)
     {
         // Recoger todas las mesas
@@ -92,31 +93,58 @@ class Mesa
         }
 
         
-        $sql = $sql.";";
-        // foreach ($params as $key => $value) {
-        //     echo "$key - [$value]<br>";
-        // }
+        $sql = $sql." ORDER BY ".BD['MESA']['NUMERO'].";";
+
 
         $consulta = $pdo -> prepare($sql);
         $consulta -> execute($params);
-        // $consulta -> debugDumpParams();
         $result = $consulta -> fetchAll(PDO::FETCH_ASSOC);
-        // echo $sql;
-        // die();
 
-        // foreach ($result as $key => $mesa) {
-        //     foreach ($mesa as $key => $value) {
-        //         echo "$key -> $value<br>";
-        //     }
-        //     echo "<br>";
-        // }
-        // die();
         if ($json) {
             return json_encode($result);
         } else {
             return $result;
         }
 
+    }
+
+    public static function getRecursos($pdo, $filtros)
+    {
+        // Recoger todas las mesas
+        $sql = "
+            SELECT ".BD['MESA']['NUMERO']." as ".VARNAMES_QUERY_RECURSOS['NUMERO'].",
+            ".BD['SALA']['TABLA'].".".BD['SALA']['NOMBRE']." as ".VARNAMES_QUERY_RECURSOS['SALA'].",
+            ".BD['MESA']['CAPACIDAD']." as ".VARNAMES_QUERY_RECURSOS['CAPACIDAD'].",
+            ".BD['MESA']['ESTADO']." as ".VARNAMES_QUERY_RECURSOS['ESTADO']."
+            FROM ".BD['MESA']['TABLA']." INNER JOIN
+            ".BD['SALA']['TABLA']." ON ".BD['MESA']['SALA']." = ".BD['SALA']['ID']."
+            WHERE 1=1
+        ";
+
+        // aplicar filtros y añadirlos a la lista de parametros de la query
+        $params = [];
+        foreach ($filtros as $key => $value) {
+            try {
+                $value = intval($value);
+                $sql = $sql." AND ".FILTROS['BD'][$key]." = :$key";
+                $params[$key] = $value;
+            } catch (\Throwable $th) {
+                $sql = $sql." AND ".FILTROS['BD'][$key]." LIKE :$key";
+                $params[$key] = $value."%";
+            }
+            // if (gettype($value) != 'string') {
+            // } else {
+            // }
+        }
+        $sql = $sql." ORDER BY ".BD['MESA']['TABLA'].".".BD['MESA']['NUMERO']." ASC;";
+
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute($params);
+        // $consulta -> debugDumpParams();
+        // die();
+        $result = $consulta -> fetchAll(PDO::FETCH_ASSOC);
+
+        return json_encode($result);
     }
 
     public static function getRegistros($pdo, $filtros)
@@ -330,6 +358,64 @@ class Mesa
         }
 
         return $return;
+    }
+
+    public static function getNextInsertNumero($pdo)
+    {
+        $sql = "SELECT ".BD['MESA']['NUMERO']." as num FROM ".BD['MESA']['TABLA']." ORDER BY ".BD['MESA']['NUMERO']." ASC;";
+
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute();
+
+        $result = $consulta -> fetchAll();
+        
+        // Iterar sobre todos los numeros para encontrar el primer numero sin usar
+        // Comparando un contador con los valores del numero de la mesa
+        // pillaremos el primer numero que no coincida con el contador y,
+        // por tanto, el primer numero disponible (no funcionará bien si hay mesas repetidas)
+        $currno = 1;
+        foreach ($result as $arr) {
+            if ($arr['num'] != $currno) {
+                break;
+            }
+            $currno++;
+        }
+        return $currno;
+    }
+
+    public static function addRecurso($pdo, $params)
+    {
+        $params[BD['MESA']['NUMERO']] = Mesa::getNextInsertNumero($pdo);
+
+        $sql = "INSERT INTO ".BD['MESA']['TABLA']."(".BD['MESA']['ID'].", ".BD['MESA']['NUMERO'].", ".BD['MESA']['ESTADO'].", ".BD['MESA']['SALA'].", ".BD['MESA']['CAPACIDAD'].")
+        VALUES(NULL, :".BD['MESA']['NUMERO'].", '0', :".BD['MESA']['SALA'].", :".BD['MESA']['CAPACIDAD'].");";
+
+        $consulta = $pdo -> prepare($sql);
+        $result = $consulta -> execute($params);
+        return $result;
+    }
+
+    public static function deleteRecurso($pdo, $num)
+    {
+        $sql = "DELETE FROM ".BD['MESA']['TABLA']." WHERE ".BD['MESA']['NUMERO']." = :num;";
+
+        $consulta = $pdo -> prepare($sql);
+        $result = $consulta -> execute(['num' => $num]);
+
+        return $result;
+    }
+
+    public static function modRecurso($pdo, $params)
+    {
+        $sql = "UPDATE ".BD['MESA']['TABLA']." 
+        SET ".BD['MESA']['SALA']." = :".BD['MESA']['SALA'].", 
+        ".BD['MESA']['CAPACIDAD']." = :".BD['MESA']['CAPACIDAD']."
+        WHERE ".BD['MESA']['NUMERO']." = :".BD['MESA']['NUMERO'].";";
+
+        $consulta = $pdo -> prepare($sql);
+        $result = $consulta -> execute($params);
+
+        return $result;
     }
 
 }

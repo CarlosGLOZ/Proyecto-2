@@ -37,16 +37,23 @@ foreach ($mesas as $mesa) {
             </div>";
 
     // Mostrar botones según estado de la mesa
-    echo "<div class='text-center github-link'>";
+    echo "<div class='text-center github-link botones-mesa'>";
     if ($mesa[BD['MESA']['ESTADO']] == 0) {
-    echo "<button class='btn btn-outline-danger' onclick='abrirModalOcupado(".$mesa[BD['MESA']['ID']].")'>Ocupar</button> ";
-    echo "<button class='btn btn-outline-secondary' onclick='abrirModalMantenimiento(".$mesa[BD['MESA']['ID']].")'>Mantenimiento</button>";
+        echo "<button class='btn btn-outline-danger' onclick='abrirModalOcupado(".$mesa[BD['MESA']['ID']].")'>Ocupar</button> ";
+        echo "<button class='btn btn-outline-warning' onclick='abrirModalMantenimiento(".$mesa[BD['MESA']['ID']].")'>Mantener</button>";
+        echo "<button class='btn btn-outline-dark' onclick='abrirModalReservar(".$mesa[BD['MESA']['ID']].")'>Reservar</button>";
     } elseif ($mesa[BD['MESA']['ESTADO']] == 1) {
-    echo "<button class='btn btn-outline-success' onclick='abrirModalLiberar(".$mesa[BD['MESA']['ID']].")'>Liberar</button> ";
-    echo "<button class='btn btn-outline-secondary' onclick='abrirModalMantenimiento(".$mesa[BD['MESA']['ID']].")'>Mantenimiento</button>";
+        echo "<button class='btn btn-outline-success' onclick='abrirModalLiberar(".$mesa[BD['MESA']['ID']].")'>Liberar</button> ";
+        echo "<button class='btn btn-outline-warning' onclick='abrirModalMantenimiento(".$mesa[BD['MESA']['ID']].")'>Mantener</button>";
     } elseif ($mesa[BD['MESA']['ESTADO']] == 2) {
-    echo "<button class='btn btn-outline-danger' onclick='abrirModalOcupado(".$mesa[BD['MESA']['ID']].")'>Ocupar</button> ";
-    echo "<button class='btn btn-outline-success' onclick='abrirModalLiberar(".$mesa[BD['MESA']['ID']].")'>Liberar</button>";
+        echo "<button class='btn btn-outline-danger' onclick='abrirModalOcupado(".$mesa[BD['MESA']['ID']].")'>Ocupar</button> ";
+        echo "<button class='btn btn-outline-success' onclick='abrirModalLiberar(".$mesa[BD['MESA']['ID']].")'>Liberar</button>";
+        echo "<button class='btn btn-outline-dark' onclick='abrirModalReservar(".$mesa[BD['MESA']['ID']].")'>Reservar</button>";
+        
+    } elseif ($mesa[BD['MESA']['ESTADO']] == 3) {
+        echo "<button class='btn btn-outline-success' onclick='abrirModalLiberar(".$mesa[BD['MESA']['ID']].")'>Liberar</button>";
+        echo "<button class='btn btn-outline-danger' onclick='abrirModalOcupado(".$mesa[BD['MESA']['ID']].")'>Ocupar</button> ";
+        echo "<button class='btn btn-outline-danger' onclick='abrirModalMantenimiento(".$mesa[BD['MESA']['ID']].")'>Mantener</button> ";
     }
     
     echo "</div></div>

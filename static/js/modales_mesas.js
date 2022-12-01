@@ -22,6 +22,14 @@ function abrirModalLiberar(idMesa) {
     modal.style.display = "flex";
 }
 
+function abrirModalReservar(idMesa) {
+    var campo_id = document.getElementById('id_mesa_modal_reservar');
+    campo_id.value = idMesa;
+
+    var modal = document.getElementById('modal-reservar-container');
+    modal.style.display = "flex";
+}
+
 function cerrarModales() {
     var modales = document.getElementsByClassName('modal-container');
 
