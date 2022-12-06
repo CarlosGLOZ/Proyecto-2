@@ -28,7 +28,7 @@
     width: 100%;
 }
 
-#form-crear-recurso {
+#form-crear-recurso, #form-crear-empleado {
     display: flex;
 
     * {
@@ -59,4 +59,53 @@
             user-select: none;
         }
     }
+}
+
+.container-modificar {
+    .modal-box {
+        width: 300px;
+        height: 90%;
+        margin-top: 30vh;
+    }
+}
+
+#reserva-box {
+    height: fit-content;
+    padding-top: 30px;
+    transition-duration: .2s;
+    display: flex;
+    flex-direction: column;
+    #botones-cambio {
+        align-self: center;
+        width: 90%;
+        display: flex;
+        justify-content: space-between;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        // justify-content: center;
+        align-items: center;
+
+        div {
+            margin-top: 5%;
+            margin-bottom: 5%;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            input {
+                border-width: 1px;
+                border-radius: 10px;
+                width: 50px;
+                padding-left: 5%;
+            }
+        }
+    }
+}
+
+#mensaje-error {
+    color: rgba(173, 0, 0, 0.779);
+    align-self: center;
 }

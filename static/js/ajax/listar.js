@@ -230,7 +230,7 @@ function listarEmpleados() {
                 boton_modificar.classList.add('btn-warning');
                 boton_modificar.innerText = "Modificar";
                 boton_modificar.addEventListener('click', (e) => {
-                    mostrarModalModificar(tr);
+                    mostrarModalModificarEmpleado(tr);
                 });
                 td_boton_modificar.appendChild(boton_modificar);
                 tr.appendChild(td_boton_modificar);
@@ -242,8 +242,8 @@ function listarEmpleados() {
                 boton_borrar.classList.add('btn-danger');
                 boton_borrar.innerText = "Borrar";
                 boton_borrar.addEventListener('click', (e) => {
-                    console.log('borrando ' + tr.children[getKeyByValue(headers, NUMERO_VARNAME)].innerText)
-                    borrarRecurso(tr.children[getKeyByValue(headers, NUMERO_VARNAME)].innerText);
+                    // console.log('borrando ' + tr.children[getKeyByValue(headers, NOMBRE_VARNAME)].innerText + ' ' + tr.children[getKeyByValue(headers, APELLIDO_VARNAME)].innerText)
+                    borrarEmpleado(tr.children[getKeyByValue(headers, DNI_VARNAME)].innerText);
                 });
                 td_boton_borrar.appendChild(boton_borrar);
                 tr.appendChild(td_boton_borrar);

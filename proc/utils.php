@@ -113,3 +113,21 @@ function eliminarVariablesGetVacias($exclude=['filtro-buscar'])
 
     return $nueva_url;
 }
+
+
+function getHorasActivas()
+{
+    $horas = [];
+
+    $hora_abertura = intval(explode(':', RESTAURANTE['HORA_ABERTURA'])[0]);
+    $hora_cierre = intval(explode(':', RESTAURANTE['HORA_CIERRE'])[0]);
+
+    for ($i=$hora_abertura; $i < $hora_cierre; $i++) { 
+        $hora = $i.":00:00";
+        $hora_media = $i.":30:00";
+        array_push($horas, $hora);
+        array_push($horas, $hora_media);
+    }
+
+    return $horas;
+}

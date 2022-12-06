@@ -19,30 +19,77 @@
 #form-crear-recurso-container {
   width: 100%;
 }
-#form-crear-recurso {
+#form-crear-recurso,
+#form-crear-empleado {
   display: flex;
 }
-#form-crear-recurso * {
+#form-crear-recurso *,
+#form-crear-empleado * {
   margin-left: 0.5%;
   margin-right: 0.5%;
   width: 120px;
 }
-#form-crear-recurso input {
+#form-crear-recurso input,
+#form-crear-empleado input {
   border-radius: 6px;
   border-width: 1px;
   padding-left: 10px;
 }
-#form-crear-recurso button {
+#form-crear-recurso button,
+#form-crear-empleado button {
   width: 50px;
 }
-#form-crear-recurso #error-val-form {
+#form-crear-recurso #error-val-form,
+#form-crear-empleado #error-val-form {
   margin: 0;
   height: 100%;
   display: flex;
   align-content: center;
 }
-#form-crear-recurso #error-val-form p {
+#form-crear-recurso #error-val-form p,
+#form-crear-empleado #error-val-form p {
   margin: 0;
   color: #f98c8c;
   user-select: none;
+}
+.container-modificar .modal-box {
+  width: 300px;
+  height: 90%;
+  margin-top: 30vh;
+}
+#reserva-box {
+  height: fit-content;
+  padding-top: 30px;
+  transition-duration: 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+#reserva-box #botones-cambio {
+  align-self: center;
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+}
+#reserva-box form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#reserva-box form div {
+  margin-top: 5%;
+  margin-bottom: 5%;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#reserva-box form div input {
+  border-width: 1px;
+  border-radius: 10px;
+  width: 50px;
+  padding-left: 5%;
+}
+#mensaje-error {
+  color: rgba(173, 0, 0, 0.779);
+  align-self: center;
 }

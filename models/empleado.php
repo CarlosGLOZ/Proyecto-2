@@ -76,4 +76,76 @@ class Empleado {
 
         return $cargos;
     }
+
+    public static function addEmpleado($pdo, $params)
+    {
+        $sql = "INSERT INTO ".BD['EMPLEADO']['TABLA']."
+        (".BD['EMPLEADO']['ID'].", ".BD['EMPLEADO']['NOMBRE'].", ".BD['EMPLEADO']['APELLIDO'].", ".BD['EMPLEADO']['DNI'].", ".BD['EMPLEADO']['PASSWORD'].", ".BD['EMPLEADO']['CARGO'].", ".BD['EMPLEADO']['EMAIL'].")
+        VALUES(NULL, :".BD['EMPLEADO']['NOMBRE'].", :".BD['EMPLEADO']['APELLIDO'].", :".BD['EMPLEADO']['DNI'].", :".BD['EMPLEADO']['PASSWORD'].", :".BD['EMPLEADO']['CARGO'].", :".BD['EMPLEADO']['EMAIL'].");";
+        
+        $consulta = $pdo -> prepare($sql);
+        $result = $consulta -> execute($params);
+
+        // $consulta -> debugDumpParams();
+        // die();
+
+        return $result;
+
+    }
+
+    public static function comprobarDisponibilidad($pdo, $params)
+    {
+        $sql = "SELECT COUNT(1) AS 'count' FROM ".BD['EMPLEADO']['TABLA']." 
+        WHERE ".BD['EMPLEADO']['EMAIL']." = :email AND ".BD['EMPLEADO']['DNI']." = :dni;";
+
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute(['email' => $params[BD['EMPLEADO']['EMAIL']], 'dni' => $params[BD['EMPLEADO']['DNI']]]);
+
+        $result = $consulta -> fetch(PDO::FETCH_ASSOC);
+
+        if ($result['count'] > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static function deleteEmpleado($pdo, $dni)
+    {
+        $sql = "DELETE FROM ".BD['EMPLEADO']['TABLA']." WHERE ".BD['EMPLEADO']['DNI']." = :dni;";
+
+        $consulta = $pdo -> prepare($sql);
+        $result = $consulta -> execute(['dni' => $dni]);
+
+        return $result;
+    }
+
+    public static function modEmpleado($pdo, $params, $nueva_contra=false)
+    {
+        if ($nueva_contra) {
+            $sql = "UPDATE ".BD['EMPLEADO']['TABLA']."
+            SET ".BD['EMPLEADO']['DNI']." = :".BD['EMPLEADO']['DNI'].",
+            ".BD['EMPLEADO']['NOMBRE']." = :".BD['EMPLEADO']['NOMBRE'].",
+            ".BD['EMPLEADO']['APELLIDO']." = :".BD['EMPLEADO']['APELLIDO'].",
+            ".BD['EMPLEADO']['EMAIL']." = :".BD['EMPLEADO']['EMAIL'].",
+            ".BD['EMPLEADO']['PASSWORD']." = :".BD['EMPLEADO']['PASSWORD'].",
+            ".BD['EMPLEADO']['CARGO']." = :".BD['EMPLEADO']['CARGO']."
+            WHERE ".BD['EMPLEADO']['DNI']." = :prev_".BD['EMPLEADO']['DNI'].";";
+        } else {
+            $sql = "UPDATE ".BD['EMPLEADO']['TABLA']."
+            SET ".BD['EMPLEADO']['DNI']." = :".BD['EMPLEADO']['DNI'].",
+            ".BD['EMPLEADO']['NOMBRE']." = :".BD['EMPLEADO']['NOMBRE'].",
+            ".BD['EMPLEADO']['APELLIDO']." = :".BD['EMPLEADO']['APELLIDO'].",
+            ".BD['EMPLEADO']['EMAIL']." = :".BD['EMPLEADO']['EMAIL'].",
+            ".BD['EMPLEADO']['CARGO']." = :".BD['EMPLEADO']['CARGO']."
+            WHERE ".BD['EMPLEADO']['DNI']." = :prev_".BD['EMPLEADO']['DNI'].";";
+        }
+
+        $consulta = $pdo -> prepare($sql);
+        $result = $consulta -> execute($params);
+        // $consulta -> debugDumpParams();
+        // die();
+
+        return $result;
+    }
 }

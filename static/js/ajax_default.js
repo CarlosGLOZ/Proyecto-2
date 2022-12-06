@@ -75,3 +75,42 @@ function mostrarModalModificar(row) {
         }
     }
 }
+
+
+// ------------------------------------------------------------------ POR HACER
+function mostrarModalModificarEmpleado(row) {
+    const modal = document.getElementById('modal-comensales-container');
+    modal.style.display = 'flex';
+
+    const form = document.getElementById('modal-form-ocupar');
+
+    const boton_guardar = document.getElementById('modal-form-boton-mod-guardar');
+    boton_guardar.addEventListener('click', (e) => {
+        e.preventDefault();
+        modEmpleado();
+    });
+
+    // Iterar sobre cada elemento del formulario y, si su nombre coincide con los nombres que hemos guardado en el controller, 
+    // cambiar su valor al valor correspondiente
+    for (let i = 0; i < form.length; i++) {
+        if (form[i].name == DNI_BD_VARNAME) {
+            form[i].value = row.getElementsByClassName('valor-' + DNI_VARNAME)[0].innerText;
+        } else if (form[i].name == 'prev_' + DNI_BD_VARNAME) {
+            form[i].value = row.getElementsByClassName('valor-' + DNI_VARNAME)[0].innerText;
+        } else if (form[i].name == NOMBRE_BD_VARNAME) {
+            form[i].value = row.getElementsByClassName('valor-' + NOMBRE_VARNAME)[0].innerText;
+        } else if (form[i].name == APELLIDO_BD_VARNAME) {
+            form[i].value = row.getElementsByClassName('valor-' + APELLIDO_VARNAME)[0].innerText;
+        } else if (form[i].name == EMAIL_BD_VARNAME) {
+            form[i].value = row.getElementsByClassName('valor-' + EMAIL_VARNAME)[0].innerText;
+        } else if (form[i].name == PASSWORD_BD_VARNAME) {
+            form[i].value = '';
+        } else if (form[i].name == CARGO_BD_VARNAME) {
+            for (let j = 0; j < form[i].length; j++) {
+                if (form[i][j].innerText == row.getElementsByClassName('valor-' + CARGO_VARNAME)[0].innerText) {
+                    form[i].value = form[i][j].value;
+                }
+            }
+        }
+    }
+}

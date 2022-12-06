@@ -91,35 +91,84 @@
 <!-- /Filtros -->
 
 
-<!-- Modal Comensales -->
-<div id="modal-comensales-container" class="modal-container">
+<!-- Modal Modificar -->
+<div id="modal-comensales-container" class="modal-container container-modificar">
     <div class="modal-box">
         <form action="../proc/cambiar_estado_mesa.php" method="post" class="modal-form" id='modal-form-ocupar'>
-            <input type="hidden" name="<?php echo BD['MESA']['NUMERO']?>">
+            <input type="hidden" name="prev_<?php echo ADD_FORM['EMPLEADO']['DNI']?>">
 
+            <h3 for="<?php echo ADD_FORM['EMPLEADO']['DNI']?>"><?php echo VARNAMES_QUERY_EMPLEADOS['DNI'];?></h3>
+            <input type="text" name="<?php echo ADD_FORM['EMPLEADO']['DNI']?>" oninput="validarFormularioModificarEmpleado()">
 
-            <h3 for="<?php echo BD['MESA']['CAPACIDAD']?>">Capacidad</h3>
-            <input type="number" name="<?php echo BD['MESA']['CAPACIDAD']?>" placeholder='Comensales' style="width:50%" max="10" min="1" style="width: 100px;">
             
+            <h3 for="<?php echo ADD_FORM['EMPLEADO']['NOMBRE']?>"><?php echo VARNAMES_QUERY_EMPLEADOS['NOMBRE'];?></h3>
+            <input type="text" name="<?php echo ADD_FORM['EMPLEADO']['NOMBRE']?>" oninput="validarFormularioModificarEmpleado()">
+
+                        
+            <h3 for="<?php echo ADD_FORM['EMPLEADO']['APELLIDO']?>"><?php echo VARNAMES_QUERY_EMPLEADOS['APELLIDO'];?></h3>
+            <input type="text" name="<?php echo ADD_FORM['EMPLEADO']['APELLIDO']?>" oninput="validarFormularioModificarEmpleado()">
+
+            
+            <h3 for="<?php echo ADD_FORM['EMPLEADO']['EMAIL']?>"><?php echo VARNAMES_QUERY_EMPLEADOS['EMAIL'];?></h3>
+            <input type="email" name="<?php echo ADD_FORM['EMPLEADO']['EMAIL']?>" oninput="validarFormularioModificarEmpleado()">
+
+            
+            <h3 for="<?php echo ADD_FORM['EMPLEADO']['PASSWORD']?>"><?php echo VARNAMES_QUERY_EMPLEADOS['PASSWORD'];?></h3>
+            <input type="password" name="<?php echo ADD_FORM['EMPLEADO']['PASSWORD']?>" oninput="validarFormularioModificarEmpleado()" placeholder="Nueva contraseña">
+
+            <h3 for="<?php echo ADD_FORM['EMPLEADO']['CARGO']?>"><?php echo VARNAMES_QUERY_EMPLEADOS['CARGO'];?></h3>
+            <select class="form-select form-select-md" name="<?php echo ADD_FORM['EMPLEADO']['CARGO'];?>" onchange="validarFormularioCrearEmpleado()">
+                <option value=''>Cargo</option>
+                <?php
+                foreach ($cargos as $id => $nombre) {
+                    echo "<option value=".$id.">".$nombre."</option>";
+                }
+                ?>
+            </select>
+          
             <button class="btn btn-outline-success" id="modal-form-boton-mod-guardar">Guardar</button>
         </form>
         <button class="btn btn-outline-danger" onclick="cerrarModales()">Cancelar</button>
     </div>
 </div>
-<!-- /Modal Comensales -->
+<!-- /Modal Modificar -->
 
 <!-- Formulario Crear -->
-<div id="form-crear-recurso-container">
-    <form action="" method="post" id="form-crear-recurso">
-        <select class="form-select form-select-md" name="<?php echo ADD_FORM['SALA']?>">
-            <?php
-                foreach ($salas as $sala) {
-                    echo "<option value=".$sala[BD['SALA']['ID']].">".explode(' - ', $sala[BD['SALA']['NOMBRE']])[0]."</option>";
-                }
-            ?>
-        </select>
-        <input type="number" name="<?php echo ADD_FORM['CAPACIDAD']?>" placeholder="Capacidad" min="1" max="10" id="form_crear_<?php echo BD['MESA']['CAPACIDAD']?>" onchange="validarFormularioCrearRecurso()">
-        <button class="btn btn-success" id="boton-form-crear-recurso">+</button>
+<div id="form-crear-empleado-container">
+    <form action="" method="post" id="form-crear-empleado">
+        <div class="nav-item">
+            <input type="text" class="form-control form-dni" id="<?php echo ADD_FORM['EMPLEADO']['DNI'];?>" oninput="validarFormularioCrearEmpleado()" placeholder="<?php echo VARNAMES_QUERY_EMPLEADOS['DNI'];?>">
+        </div>
+        
+        <div class="nav-item">
+            <input type="text" class="form-control form-name" id="<?php echo ADD_FORM['EMPLEADO']['NOMBRE'];?>" oninput="validarFormularioCrearEmpleado()" placeholder="<?php echo VARNAMES_QUERY_EMPLEADOS['NOMBRE'];?>">
+        </div>
+
+        <div class="nav-item">
+            <input type="text" class="form-control form-name" id="<?php echo ADD_FORM['EMPLEADO']['APELLIDO'];?>" oninput="validarFormularioCrearEmpleado()" placeholder="<?php echo VARNAMES_QUERY_EMPLEADOS['APELLIDO'];?>">
+        </div>
+
+        <div class="nav-item">
+            <input type="email" class="form-control form-email" id="<?php echo ADD_FORM['EMPLEADO']['EMAIL'];?>" oninput="validarFormularioCrearEmpleado()" placeholder="<?php echo VARNAMES_QUERY_EMPLEADOS['EMAIL'];?>">
+        </div>
+
+        <div class="nav-item">
+            <input type="password" class="form-control form-name" id="<?php echo ADD_FORM['EMPLEADO']['PASSWORD'];?>" oninput="validarFormularioCrearEmpleado()" placeholder="<?php echo VARNAMES_QUERY_EMPLEADOS['PASSWORD'];?>">
+        </div>
+
+        <div class="nav-item">
+            <select class="form-select form-select-md" id="<?php echo ADD_FORM['EMPLEADO']['CARGO'];?>" onchange="validarFormularioCrearEmpleado()">
+                    <option value=''>Cargo</option>
+                    <?php
+                    foreach ($cargos as $id => $nombre) {
+                        echo "<option value=".$id.">".$nombre."</option>";
+                    }
+                    ?>
+            </select>
+        </div>
+        <div class="nav-item">
+            <button class="btn btn-success" id="boton-form-crear-empleado">+</button>
+        </div>
         <div id="error-val-form" style="display: none;"><p>Datos Invalidos</p></div>
     </form>
 </div>

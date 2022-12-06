@@ -72,6 +72,18 @@ const BD =
         'MESA' => 'fk_mesa_inc'
     ],
 
+    'RESERVA' => 
+    [
+        'TABLA' => 'tbl_reserva',
+        'ID' => 'id_reserva',
+        'MESA' => 'fk_mesa_reserva',
+        'NOMBRE' => 'nombre_reserva',
+        'COMENSALES' => 'comensales_reserva',
+        'FECHA' => 'fecha_reserva',
+        'HORA_INICIO' => 'hora_inicio_reserva',
+        'HORA_FINAL' => 'hora_final_reserva'
+    ],
+
 
 ];
 
@@ -125,7 +137,6 @@ const COLORES_MESAS =
     0 => 'verde',
     1 => 'rojo',
     2 => 'blanco',
-    3 => 'amarillo',
 ];
 
 CONST VARNAMES_QUERY_RECURSOS =
@@ -143,9 +154,24 @@ CONST VARNAMES_QUERY_EMPLEADOS =
     'DNI' => 'DNI',
     'EMAIL' => 'Email',
     'CARGO' => 'Cargo',
+    'PASSWORD' => 'Contraseña',
 ];
 
 CONST ADD_FORM = [
     'SALA' => BD['MESA']['SALA'],
     'CAPACIDAD' => BD['MESA']['CAPACIDAD'],
+
+    'EMPLEADO' => [
+        'DNI' => BD['EMPLEADO']['DNI'],
+        'NOMBRE' => BD['EMPLEADO']['NOMBRE'],
+        'APELLIDO' => BD['EMPLEADO']['APELLIDO'],
+        'EMAIL' => BD['EMPLEADO']['EMAIL'],
+        'CARGO' => BD['EMPLEADO']['CARGO'],
+        'PASSWORD' => BD['EMPLEADO']['PASSWORD'],
+    ],
+];
+
+const RESTAURANTE = [
+    'HORA_ABERTURA' => '09:00',
+    'HORA_CIERRE' => '22:00',
 ];

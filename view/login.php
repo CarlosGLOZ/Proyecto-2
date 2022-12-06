@@ -1,19 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
-    <form action="../proc/login_proc.php" method="post">
-        <input type="text" name=<?php //echo LOGIN_FORM['USER']?>>
-        <input type="password" name=<?php //echo LOGIN_FORM['PASSWORD']?>>
-        <input type="submit" value="Entrar" name = <?php// echo LOGIN_FORM['SEND']?>>
-    </form>
-</body>
-</html> -->
 <!DOCTYPE html>
 <html lang="en" >
 <head>

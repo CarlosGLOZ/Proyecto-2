@@ -343,21 +343,38 @@ class Mesa
         return $result;
     }
 
-    public static function getCapacidades($pdo)
+    public static function getCapacidades($pdo, $max=false)
     {
-        $sql = "SELECT ".BD['MESA']['CAPACIDAD']." AS cap FROM ".BD['MESA']['TABLA']." GROUP BY ".BD['MESA']['CAPACIDAD'].";";
+        // Si max=true, recuperar el número máximo de comensales
+        if ($max) {
+            $sql = "SELECT ".BD['MESA']['CAPACIDAD']." AS cap FROM ".BD['MESA']['TABLA']." GROUP BY ".BD['MESA']['CAPACIDAD']." ORDER BY ".BD['MESA']['CAPACIDAD']." DESC;";
+            
+            $consulta = $pdo -> prepare($sql);
+            $consulta -> execute();
+            
+            $result = $consulta -> fetch();
+            $return = [];
 
-        $consulta = $pdo -> prepare($sql);
-        $consulta -> execute();
+            foreach ($result as $value) {
+                array_push($return, $value['cap']);
+            }
+            
+            return $return;
+        } else {
+            $sql = "SELECT ".BD['MESA']['CAPACIDAD']." AS cap FROM ".BD['MESA']['TABLA']." GROUP BY ".BD['MESA']['CAPACIDAD'].";";
+            
+            $consulta = $pdo -> prepare($sql);
+            $consulta -> execute();
+            
+            $result = $consulta -> fetchAll();
+            $return = [];
 
-        $result = $consulta -> fetchAll();
-        $return = [];
-
-        foreach ($result as $value) {
-            array_push($return, $value['cap']);
+            foreach ($result as $value) {
+                array_push($return, $value['cap']);
+            }
+            
+            return $return;
         }
-
-        return $return;
     }
 
     public static function getNextInsertNumero($pdo)
@@ -416,6 +433,96 @@ class Mesa
         $result = $consulta -> execute($params);
 
         return $result;
+    }
+
+    // Validaciones de reserva
+
+    // Comprobar si hay mesas libres para los comensales especificados
+    public static function getMesasLibresConComensales($pdo, $comensales, $margen=2)
+    {
+        // Recogeremos el numero de mesas con almenos la dada cantidad de comensales
+        $sql = "SELECT * FROM ".BD['MESA']['TABLA']." 
+        WHERE ".BD['MESA']['CAPACIDAD']." >= :comensales 
+        AND ".BD['MESA']['CAPACIDAD']." <= :margen 
+        ORDER BY ".BD['MESA']['CAPACIDAD']." ASC;";
+
+        $consulta = $pdo -> prepare($sql);
+        $margen = $comensales + $margen;
+        $consulta -> execute([
+            'comensales' => $comensales,
+            'margen' => $margen,
+        ]);
+
+        $result = $consulta -> fetchAll(PDO::FETCH_ASSOC);
+        
+        return $result;
+    }
+
+    // Recuperar las horas disponibles en una fecha
+    public static function getHorasDisponiblesEnFecha($pdo, $fecha, $comensales)
+    {
+        $comensales_margen = $comensales + 2;
+
+        $sql = "SELECT ".BD['RESERVA']['HORA_INICIO']." as hora_inicio, ".BD['RESERVA']['HORA_FINAL']." as hora_final
+        FROM ".BD['RESERVA']['TABLA']." INNER JOIN ".BD['MESA']['TABLA']." ON ".BD['MESA']['ID']." = ".BD['RESERVA']['MESA']."
+        WHERE ".BD['RESERVA']['FECHA']." = :fecha
+        AND ".BD['MESA']['CAPACIDAD']." >= :com
+        AND ".BD['MESA']['CAPACIDAD']." <= :com_margen;";
+
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute([
+            'fecha' => $fecha,
+            'com' => $comensales,
+            'com_margen' => $comensales_margen,
+        ]);
+
+        $result = $consulta -> fetchAll(PDO::FETCH_ASSOC);
+
+        $horas = getHorasActivas();
+
+        // Hacer un array associativo que relacione cada hora con la cantidad de mesas libres en ella
+        $array_horas_disponibilidad = [];
+        foreach ($horas as $hora) {
+            $array_horas_disponibilidad[$hora] = 0;
+        }
+
+        // Hacer un array de las horas en las que hay una mesa disponible
+        $horas_disponibles = [];
+
+        
+        // Iteramos sobre cada reserva y añadimos +1 a la hora en la que se haya reservado (y a las 2 medias horas siguientes)
+        foreach ($result as $reserva) {
+
+            // Cogemos el indice de las horas de inicio y final para usarlo como maximo y minimo
+            $hora_inicio_index = array_search($reserva['hora_inicio'], $horas);
+            $hora_final_index = array_search($reserva['hora_final'], $horas);
+
+            // Por cada hora entre la hora de inicio y la final, añadir +1 a la hora en array_horas_disponibilidad
+            for ($i=$hora_inicio_index; $i < $hora_final_index; $i++) { 
+                // Sumar +1
+                $array_horas_disponibilidad[$horas[$i]] += 1;
+                // Sumar uno a la media hora anterior también
+                $array_horas_disponibilidad[$horas[$i-1]] += 1;
+            }
+        }
+
+        // Si alguna hora en el array array_horas_disponibilidad tiene un numero de reservas 
+        // menor a la cantidad de mesas disponibles para esos comensales,
+        // añadimos la hora al array de horas disponibles
+        $mesas = Mesa::getMesasLibresConComensales($pdo, $comensales);
+
+        $cantidad_mesas = 0;
+        foreach ($mesas as $mesa) {
+            $cantidad_mesas++;
+        }
+
+        foreach ($array_horas_disponibilidad as $hora => $reservas) {
+            if ($reservas < $cantidad_mesas) {
+                array_push($horas_disponibles, $hora);
+            }
+        }
+
+        return $horas_disponibles;
     }
 
 }
