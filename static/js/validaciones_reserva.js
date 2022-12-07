@@ -26,8 +26,13 @@ function hacerReserva() {
     ajax.onload = function() {
         if (ajax.status === 200) {
             if (ajax.responseText == 'OK') {
-                // No hay mesas libres
-                mensaje_error.innerText = 'OK';
+                // Mostrar sweetalert que te manda a la pagina de reserva
+                Swal.fire({
+                    title: '¿Reserva Hecha!',
+                    confirmButtonText: 'OK',
+                }).then((result) => {
+                    window.location.href = '';
+                })
             } else {
                 mensaje_error.innerText = 'No se ha podido hacer la reserva';
                 console.log(ajax.responseText)
@@ -364,6 +369,37 @@ function activarBoton(boton) {
     }
 }
 
+function cambiarAnterior() {
+    for (let i = 0; i < formulario_reserva.children.length; i++) {
+        if (getComputedStyle(formulario_reserva.children[i]).display != 'none') {
+            let prev_item = i - 1;
 
-// boton_atras.addEventListener('click', cambiarAnterior);
+            // Validar si el item al que estamos pasando es el último
+            if (prev_item == 0) {
+                boton_atras.style.display = 'none';
+            }
+
+            // Validar que el usuario no esté intentando pasar a un item que no  existe
+            if (prev_item < 0) {
+                return;
+            }
+
+            // Esconder item
+            formulario_reserva.children[i].style.display = 'none';
+
+            // Mostrar siguiente item
+            formulario_reserva.children[prev_item].style.display = 'flex';
+
+            // Mostrar boton Atrás
+            boton_siguiente.style.display = 'block';
+            activarBoton(boton_siguiente);
+            boton_confirmar.remove();
+
+            return true;
+
+        }
+    }
+}
+
+boton_atras.addEventListener('click', cambiarAnterior);
 boton_siguiente.addEventListener('click', cambiarSiguiente);

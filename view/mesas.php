@@ -29,10 +29,19 @@
   <script src="../static/js/function_logout.js"></script>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#"><img class="foto" src="../static/img/logores.png" alt=""></a>
+        <a class="navbar-brand" href="index_controller.php"><img class="foto" src="../static/img/logores.png" alt=""></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <!-- Botones para ver los recursos y los empleados -->
+                <li class='nav-item'>
+                    <button class='btn bt-outline' onclick="window.location.href = 'empleados_controller.php';">Empleados</button>
+                </li>
+            </ul>
+        </div>
         <div class="navbar-nav">
             <a onclick="aviso3();" class="nav-link bg-light" aria-pressed='true' aria-current="page" role='button'>Log out</a>
         </div>
@@ -109,7 +118,7 @@
 <!-- /Filtros -->
 
 
-<!-- Modal Comensales -->
+<!-- Modal Modificar -->
 <div id="modal-comensales-container" class="modal-container">
     <div class="modal-box">
         <form action="../proc/cambiar_estado_mesa.php" method="post" class="modal-form" id='modal-form-ocupar'>
@@ -132,7 +141,7 @@
         <button class="btn btn-outline-danger" onclick="cerrarModales()">Cancelar</button>
     </div>
 </div>
-<!-- /Modal Comensales -->
+<!-- /Modal Modificar -->
 
 <!-- Formulario Crear -->
 <div id="form-crear-recurso-container">

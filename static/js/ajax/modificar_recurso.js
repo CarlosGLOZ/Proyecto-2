@@ -17,10 +17,28 @@ function modRecurso() {
     ajax.onload = function() {
         if (ajax.status === 200) {
             if (ajax.responseText == 'OK') {
-                alert('Mesa ' + num_mesa + ' modificada');
-                listarRecursos();
-                cerrarModales();
+                Swal.fire({
+                    title: 'Mesa ' + num_mesa + ' modificada',
+                    icon: 'success',
+                }).then((result) => {
+                    listarRecursos();
+                    cerrarModales();
+                })
+            } else {
+                Swal.fire({
+                    title: 'No se ha podido modificar el recurso',
+                    icon: 'error',
+                }).then((result) => {
+                    listarRecursos();
+                })
             }
+        } else {
+            Swal.fire({
+                title: 'No se ha podido modificar el recurso',
+                icon: 'error',
+            }).then((result) => {
+                listarRecursos();
+            })
         }
     }
 
@@ -47,10 +65,28 @@ function modEmpleado() {
     ajax.onload = function() {
         if (ajax.status === 200) {
             if (ajax.responseText == 'OK') {
-                alert('Empleado ' + nombre_emp + ' modificado');
-                listarEmpleados();
-                cerrarModales();
+                Swal.fire({
+                    title: 'Empleado ' + nombre_emp + ' modificado',
+                    icon: 'success',
+                }).then((result) => {
+                    listarEmpleados();
+                    cerrarModales();
+                })
+            } else {
+                Swal.fire({
+                    title: 'No se ha modificar crear el empleado',
+                    icon: 'error',
+                }).then((result) => {
+                    listarEmpleados();
+                })
             }
+        } else {
+            Swal.fire({
+                title: 'No se ha modificar crear el empleado',
+                icon: 'error',
+            }).then((result) => {
+                listarEmpleados();
+            })
         }
     }
 

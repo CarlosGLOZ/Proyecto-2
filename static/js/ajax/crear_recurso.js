@@ -29,8 +29,27 @@ if (form_crear_recurso != undefined) {
             ajax.onload = function() {
                 if (ajax.status === 200) {
                     if (ajax.responseText == 'OK') {
-                        listarRecursos();
+                        Swal.fire({
+                            title: 'Recurso Creado',
+                            icon: 'success',
+                        }).then((result) => {
+                            listarRecursos();
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'No se ha podido crear el recurso',
+                            icon: 'error',
+                        }).then((result) => {
+                            listarRecursos();
+                        })
                     }
+                } else {
+                    Swal.fire({
+                        title: 'No se ha podido crear el recurso',
+                        icon: 'error',
+                    }).then((result) => {
+                        listarRecursos();
+                    })
                 }
             }
 
@@ -72,9 +91,27 @@ if (form_crear_empleado != undefined) {
                 if (ajax.status === 200) {
                     // console.log(ajax.responseText)
                     if (ajax.responseText == 'OK') {
-                        alert('Empleado creado')
-                        listarEmpleados();
+                        Swal.fire({
+                            title: 'Empleado Creado',
+                            icon: 'success',
+                        }).then((result) => {
+                            listarEmpleados();
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'No se ha podido crear el empleado',
+                            icon: 'error',
+                        }).then((result) => {
+                            listarEmpleados();
+                        })
                     }
+                } else {
+                    Swal.fire({
+                        title: 'No se ha podido crear el empleado',
+                        icon: 'error',
+                    }).then((result) => {
+                        listarEmpleados();
+                    })
                 }
             }
 

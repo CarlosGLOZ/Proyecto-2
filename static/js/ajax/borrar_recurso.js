@@ -9,12 +9,28 @@ function borrarRecurso(numero) {
     ajax.onload = function() {
         if (ajax.status === 200) {
             if (ajax.responseText == 'OK') {
-                alert('Recurso Eliminado');
-                listarRecursos();
+                Swal.fire({
+                    title: 'Recurso Borrado',
+                    icon: 'success',
+                }).then((result) => {
+                    listarRecursos();
+                })
             } else {
+                Swal.fire({
+                    title: 'No se ha podido borrar el recurso',
+                    icon: 'error',
+                }).then((result) => {
+                    listarRecursos();
+                })
                 console.log(ajax.responseText)
             }
         } else {
+            Swal.fire({
+                title: 'No se ha podido borrar el recurso',
+                icon: 'error',
+            }).then((result) => {
+                listarRecursos();
+            })
             console.log('ajax status: ' + ajax.status)
         }
     }
@@ -33,12 +49,28 @@ function borrarEmpleado(DNI) {
     ajax.onload = function() {
         if (ajax.status === 200) {
             if (ajax.responseText == 'OK') {
-                alert('Recurso Eliminado');
-                listarEmpleados();
+                Swal.fire({
+                    title: 'Empleado Borrado',
+                    icon: 'success',
+                }).then((result) => {
+                    listarEmpleados();
+                })
             } else {
+                Swal.fire({
+                    title: 'No se ha podido borrar el empleado',
+                    icon: 'error',
+                }).then((result) => {
+                    listarEmpleados();
+                })
                 console.log(ajax.responseText)
             }
         } else {
+            Swal.fire({
+                title: 'No se ha podido borrar el empleado',
+                icon: 'error',
+            }).then((result) => {
+                listarEmpleados();
+            })
             console.log('ajax status: ' + ajax.status)
         }
     }

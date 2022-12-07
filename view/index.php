@@ -29,7 +29,7 @@
   <script src="../static/js/function_logout.js"></script>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#"><img class="foto" src="../static/img/logores.png" alt=""></a>
+        <a class="navbar-brand" href=""><img class="foto" src="../static/img/logores.png" alt=""></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
@@ -45,6 +45,14 @@
                         ";
                     }
                 ?>
+                <!-- Botones para ver los recursos y los empleados -->
+                <li class='nav-item'>
+                    <button class='btn bt-outline' onclick="window.location.href = 'mesas_controller.php';">Recursos</button>
+                </li>
+
+                <li class='nav-item'>
+                    <button class='btn bt-outline' onclick="window.location.href = 'empleados_controller.php';">Empleados</button>
+                </li>
             </ul>
         </div>
         <div class="navbar-nav">
@@ -110,7 +118,7 @@
             <h3 style="text-align: center">Comensales:</h3>
             <input type="hidden" name="<?php echo BD['MESA']['ID']?>" id="id_mesa_modal_comensales">
             <input type="hidden" name="<?php echo BD['MESA']['ESTADO']?>" value="1">
-            <input type="number" name="<?php echo BD['REGISTRO']['COMENSALES']?>" placeholder='Comensales' style="width:50%" max="10" min="1">
+            <input type="number" name="<?php echo BD['REGISTRO']['COMENSALES']?>" placeholder='Comensales' style="width:105px" max="10" min="1">
             <button class="btn btn-outline-success modal-form-submit-button" onclick="ocuparMesa()">Guardar</button>
         </form>
         <button class="btn btn-outline-danger" onclick="cerrarModales()">Cancelar</button>

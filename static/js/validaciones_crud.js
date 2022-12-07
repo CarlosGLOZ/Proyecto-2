@@ -72,3 +72,36 @@ function validarDNI(dni) {
         return false;
     }
 }
+
+const form_modificar_empleado = document.getElementById('modal-form-ocupar');
+const boton_guardar_modificar = document.getElementById('modal-form-boton-mod-guardar');
+
+function validarFormularioModificarEmpleado() {
+    console.log(form_modificar_empleado);
+    console.log(boton_guardar_modificar)
+
+    let val = true;
+    for (let i = 0; i < form_modificar_empleado.length; i++) {
+        // Si el elemento tiene la clase form-dni
+        if (form_modificar_empleado[i].name == "dni_empleado") {
+            let value = form_modificar_empleado[i].value;
+            if (!validarDNI(value)) {
+                val = false;
+            }
+        } else if (form_modificar_empleado[i].name == "email_empleado") {
+            let expresion_regular_email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+            if (!expresion_regular_email.test(form_modificar_empleado[i].value)) {
+                val = false;
+            }
+        }
+    }
+
+    if (val) {
+        boton_guardar_modificar.classList.remove('disabled');
+        return true;
+    } else {
+        boton_guardar_modificar.classList.add('disabled');
+        return false;
+    }
+}
