@@ -4,6 +4,40 @@ const boton_atras = document.getElementById('boton-cambio-atras');
 const boton_siguiente = document.getElementById('boton-cambio-siguiente');
 const mensaje_error = document.getElementById('mensaje-error');
 
+// Crear boton enviar formulario
+const boton_confirmar = boton_siguiente.cloneNode();
+boton_confirmar.innerText = 'Reservar';
+desactivarBoton(boton_confirmar);
+boton_confirmar.style.display = 'inline-block';
+boton_confirmar.addEventListener('click', hacerReserva);
+
+function hacerReserva() {
+    let formData = new FormData;
+    for (let i = 0; i < formulario_reserva.length; i++) {
+        if (formulario_reserva[i].tagName == 'INPUT' || formulario_reserva[i].tagName == 'SELECT') {
+            formData.append(formulario_reserva[i].name, formulario_reserva[i].value);
+        }
+    }
+
+    const ajax = new XMLHttpRequest();
+
+    ajax.open('POST', '../proc/ajax/hacer_reserva.php');
+
+    ajax.onload = function() {
+        if (ajax.status === 200) {
+            if (ajax.responseText == 'OK') {
+                // No hay mesas libres
+                mensaje_error.innerText = 'OK';
+            } else {
+                mensaje_error.innerText = 'No se ha podido hacer la reserva';
+                console.log(ajax.responseText)
+            }
+        }
+    }
+
+    ajax.send(formData);
+}
+
 function getFechaHoy() {
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -15,6 +49,19 @@ function getFechaHoy() {
     return today;
 }
 
+function getFechaMañana() {
+    var today = new Date();
+    var tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    var dd = String(tomorrow.getDate()).padStart(2, '0');
+    var mm = String(tomorrow.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = tomorrow.getFullYear();
+
+    tomorrow = yyyy + '-' + mm + '-' + dd;
+
+    return tomorrow;
+}
+
 function setUpForm(form) {
     for (let i = 0; i < form.length; i++) {
         if (i > 0) {
@@ -24,7 +71,7 @@ function setUpForm(form) {
 
     for (let i = 0; i < formulario_reserva.length; i++) {
         if (formulario_reserva[i].name == BD['FECHA']) {
-            const today = getFechaHoy();
+            const today = getFechaMañana();
 
             formulario_reserva[i].min = today;
             // formulario_reserva[i].value = today;
@@ -38,11 +85,12 @@ setUpForm(formulario_reserva.children);
 function validarForm() {
     for (let i = 0; i < formulario_reserva.length; i++) {
         if (getComputedStyle(formulario_reserva[i].parentElement).display != 'none') {
+            mensaje_error.innerText = '';
             if (formulario_reserva[i].name == BD['COMENSALES']) {
                 // Comprobar si hay mesas disponibles con esa cantidad de comensales
 
-                if (formulario_reserva[i].value < 1 || formulario_reserva[i] > 10) {
-                    mensaje_error.innerText = 'No hay mesas para estos comensales';
+                if (formulario_reserva[i].value < 1 || formulario_reserva[i].value > 10) {
+                    mensaje_error.innerText = 'Solo hay mesas para entre 1 y 10 comensales';
                     return false;
                 }
 
@@ -56,12 +104,10 @@ function validarForm() {
 
                 ajax.onload = function() {
                     if (ajax.status === 200) {
-                        if (ajax.responseText == 'LIBRES') {
-                            // Hay mesas libres
-                            mensaje_error.innerText = '';
-                        } else {
+                        if (ajax.responseText != 'LIBRES') {
                             // No hay mesas libres
                             mensaje_error.innerText = 'No hay mesas para estos comensales';
+                            console.log(ajax.responseText);
                         }
                     }
                 }
@@ -74,7 +120,14 @@ function validarForm() {
                     return false;
                 }
             } else if (formulario_reserva[i].name == BD['FECHA']) {
+                const hora_inicio_valor = document.getElementsByName(BD['HORA_INICIO'])[0].value;
+                const hora_final_valor = document.getElementsByName(BD['HORA_FINAL'])[0].value;
 
+                if (parseHourValue(hora_final_valor) <= parseHourValue(hora_inicio_valor)) {
+                    return false;
+                }
+
+                return true;
             }
         }
     }
@@ -83,29 +136,32 @@ function validarForm() {
 
 function cambiarSiguiente() {
     if (validarForm()) {
-        for (let i = 0; i < formulario_reserva.length; i++) {
-            if (getComputedStyle(formulario_reserva[i].parentElement).display != 'none') {
+        for (let i = 0; i < formulario_reserva.children.length; i++) {
+            if (getComputedStyle(formulario_reserva.children[i]).display != 'none') {
                 let next_item = i + 1;
-                // console.log(formulario_reserva[next_item])
 
                 // Validar si el item al que estamos pasando es el último
-                if (next_item == formulario_reserva.length) {
+                if (next_item == (formulario_reserva.children.length - 1)) {
                     boton_siguiente.style.display = 'none';
+
+                    // Añadir boton de enviar formulario (copiar de boton_siguiente)
+                    boton_siguiente.parentElement.append(boton_confirmar);
+
                 }
 
                 // Validar que el usuario no esté intentando pasar a un item que no  existe
-                if (next_item > formulario_reserva.length) {
+                if (next_item > formulario_reserva.children.length) {
                     return;
                 }
 
                 // Ejecutar funcion especifica para cada item cuando se muestra
-                setUpItem(formulario_reserva[next_item].parentElement);
+                setUpItem(formulario_reserva.children[next_item]);
 
                 // Esconder item
-                formulario_reserva[i].parentElement.style.display = 'none';
+                formulario_reserva.children[i].style.display = 'none';
 
                 // Mostrar siguiente item
-                formulario_reserva[next_item].parentElement.style.display = 'flex';
+                formulario_reserva.children[next_item].style.display = 'flex';
 
                 // Mostrar boton Atrás
                 boton_atras.style.display = 'block';
@@ -128,6 +184,7 @@ function validarFecha(e) {
     if (fecha < fechaHoy) {
         // No hay mesas libres
         mensaje_error.innerText = 'Fecha inválida';
+        desactivarBoton(boton_siguiente);
         return false;
     }
 
@@ -237,15 +294,13 @@ function validarHora(e) {
             }
         }
 
-        boton_siguiente.classList.remove('disabled');
+        activarBoton(boton_siguiente);
 
         select_horas_finales.parentElement.style.display = 'flex';
     } else {
         mensaje_error.innerText = 'No se puede reservar a esta hora';
 
-        if (!boton_siguiente.classList.contains('disabled')) {
-            boton_siguiente.classList.add('disabled');
-        }
+        desactivarBoton(boton_siguiente);
 
         select_horas_finales.parentElement.style.display = 'none';
     }
@@ -267,7 +322,45 @@ function setUpItem(item) {
         }
 
         // Deshabilitar botón de siguiente
-        boton_siguiente.classList.add('disabled')
+        desactivarBoton(boton_siguiente);
+    } else if (item.id == "reserva-input-nombre") {
+        const campo_nombre = item.getElementsByTagName('input')[0];
+
+        campo_nombre.addEventListener('input', function(e) {
+            validarNombre(e.target);
+        });
+    }
+}
+
+function validarNombre(input) {
+    var regex = /^[a-zA-Z ]{2,30}$/;
+
+    if (regex.test(input.value)) {
+        mensaje_error.innerText = '';
+        for (let i = 0; i < boton_siguiente.parentElement.children.length; i++) {
+            activarBoton(boton_siguiente.parentElement.children[i]);
+        }
+
+        return true;
+    } else {
+        mensaje_error.innerText = 'Nombre no válido';
+        for (let i = 0; i < boton_siguiente.parentElement.children.length; i++) {
+            desactivarBoton(boton_siguiente.parentElement.children[i]);
+        }
+
+        return false;
+    }
+}
+
+function desactivarBoton(boton) {
+    if (!boton.classList.contains('disabled')) {
+        boton.classList.add('disabled');
+    }
+}
+
+function activarBoton(boton) {
+    if (boton.classList.contains('disabled')) {
+        boton.classList.remove('disabled');
     }
 }
 

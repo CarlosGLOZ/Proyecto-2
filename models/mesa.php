@@ -438,7 +438,7 @@ class Mesa
     // Validaciones de reserva
 
     // Comprobar si hay mesas libres para los comensales especificados
-    public static function getMesasLibresConComensales($pdo, $comensales, $margen=2)
+    public static function getMesasConComensales($pdo, $comensales, $margen=2)
     {
         // Recogeremos el numero de mesas con almenos la dada cantidad de comensales
         $sql = "SELECT * FROM ".BD['MESA']['TABLA']." 
@@ -509,7 +509,7 @@ class Mesa
         // Si alguna hora en el array array_horas_disponibilidad tiene un numero de reservas 
         // menor a la cantidad de mesas disponibles para esos comensales,
         // añadimos la hora al array de horas disponibles
-        $mesas = Mesa::getMesasLibresConComensales($pdo, $comensales);
+        $mesas = Mesa::getMesasConComensales($pdo, $comensales);
 
         $cantidad_mesas = 0;
         foreach ($mesas as $mesa) {
@@ -523,6 +523,91 @@ class Mesa
         }
 
         return $horas_disponibles;
+    }
+
+    public static function getIdMesaPorNumero($pdo, $mesa)
+    {
+        $sql = "SELECT ".BD['MESA']['ID']." as id FROM ".BD['MESA']['TABLA']." WHERE ".BD['MESA']['NUMERO']." = :numero;";
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute(['numero' => $mesa]);
+
+        $result = $consulta -> fetch(PDO::FETCH_ASSOC);
+
+        $consulta -> debugDumpParams();
+
+        return $result['id'];
+    }
+
+    public static function mesaEstaLibreEnHora($pdo, $mesa, $fecha, $hora_inicio, $hora_final)
+    {
+        // $mesa = Mesa::getIdMesaPorNumero($pdo, $mesa);
+
+        // SQL para ver si hay una reserva que coincida con la que se pide
+
+        // ESTA QUERY DA ERROR
+        // $sql = "SELECT count(1) as cont FROM ".BD['RESERVA']['TABLA']." WHERE ".BD['RESERVA']['MESA']." = :mesa
+        // AND ".BD['RESERVA']['FECHA']." = :fecha
+        // AND max(".BD['RESERVA']['HORA_INICIO'].", :hora_inicio) < min(".BD['RESERVA']['HORA_FINAL'].", :hora_final)";
+
+        // ESTA QUERY ESTÁ ESCRITA POR CHAT GPT
+        $sql = "SELECT count(*) as cont
+            FROM ".BD['RESERVA']['TABLA']."
+            WHERE ".BD['RESERVA']['MESA']." = :mesa
+            AND ".BD['RESERVA']['FECHA']." = :fecha
+            AND (
+                (".BD['RESERVA']['HORA_INICIO']." >= :hora_inicio AND ".BD['RESERVA']['HORA_INICIO']." < :hora_final)
+                OR (".BD['RESERVA']['HORA_FINAL']." > :hora_inicio AND ".BD['RESERVA']['HORA_FINAL']." <= :hora_final)
+        );";
+        
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute([
+            'mesa' => $mesa,
+            'fecha' => $fecha,
+            'hora_inicio' => $hora_inicio,
+            'hora_final' => $hora_final,
+        ]);
+
+
+        $reservas = $consulta -> fetch(PDO::FETCH_ASSOC);
+
+        if ($reservas['cont'] > 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static function getMesaParaReserva($pdo, $comensales, $fecha, $hora_inicio, $hora_final)
+    {
+        // Hacer una lista de las mesas posibles en base a sus comensales
+        $sql = "SELECT ".BD['MESA']['ID']." as num FROM ".BD['MESA']['TABLA']."
+        WHERE ".BD['MESA']['CAPACIDAD']." = :comensales
+        ORDER BY ".BD['MESA']['CAPACIDAD']." ASC";
+
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute(['comensales' => $comensales]);
+
+        $mesas = $consulta -> fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($mesas as $mesa) {
+            if (Mesa::mesaEstaLibreEnHora($pdo, $mesa['num'], $fecha, $hora_inicio, $hora_final)) {
+                return $mesa['num'];
+            }
+        }
+    }
+
+    public static function hacerReserva($pdo, $params)
+    {
+        $params[BD['RESERVA']['MESA']] = Mesa::getMesaParaReserva($pdo, $params[BD['RESERVA']['COMENSALES']], $params[BD['RESERVA']['FECHA']], $params[BD['RESERVA']['HORA_INICIO']], $params[BD['RESERVA']['HORA_FINAL']]);
+        
+        $sql = "INSERT INTO ".BD['RESERVA']['TABLA']."
+        VALUES(NULL, :".BD['RESERVA']['MESA'].", :".BD['RESERVA']['NOMBRE'].", :".BD['RESERVA']['COMENSALES'].",
+        :".BD['RESERVA']['FECHA'].", :".BD['RESERVA']['HORA_INICIO'].", :".BD['RESERVA']['HORA_FINAL'].");";
+
+        $consulta = $pdo -> prepare($sql);
+        $result = $consulta -> execute($params);
+
+        return $result;
     }
 
 }

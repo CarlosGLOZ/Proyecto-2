@@ -8,7 +8,7 @@ $instruccion = strip_tags(trim($_POST['INSTRUCCION']));
 
 if ($instruccion == BD['RESERVA']['COMENSALES']) {
     $comensales = strip_tags(trim($_POST[BD['RESERVA']['COMENSALES']]));
-    $mesas_libres = Mesa::getMesasLibresConComensales($pdo, $comensales);
+    $mesas_libres = Mesa::getMesasConComensales($pdo, $comensales);
 
     // Contar las mesas libres
     $cont_mesas = 0;

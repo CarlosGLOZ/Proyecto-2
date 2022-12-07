@@ -50,7 +50,7 @@ if (!$entrada_valida) {
         <form action="../proc/login_proc.php" method="post" id="form-reserva">
           <div id="reserva-input-comensales">
             <h3 for="<?php echo BD['RESERVA']['COMENSALES']?>">Comensales</h3>
-            <input type="number" name="<?php echo BD['RESERVA']['COMENSALES']?>" min="1" max="10">
+            <input type="number" name="<?php echo BD['RESERVA']['COMENSALES']?>" min="1" max="10" style="width: 60px;">
           </div>
           
           <div id="reserva-input-fecha_inicio">
@@ -66,13 +66,10 @@ if (!$entrada_valida) {
               <select name="<?php echo BD['RESERVA']['HORA_FINAL']?>"></select>
             </div>
           </div>
-          
-          <!-- <div id="reserva-input-horas">
-          </div> -->
-          
+
           <div id="reserva-input-nombre">
             <h3 for="<?php echo BD['RESERVA']['NOMBRE']?>">¿A nombre de quien?</h3>
-            <input type="text" name="<?php echo BD['RESERVA']['NOMBRE']?>">
+            <input type="text" name="<?php echo BD['RESERVA']['NOMBRE']?>" style="width: 200px;">
           </div>
 
         </form>  
