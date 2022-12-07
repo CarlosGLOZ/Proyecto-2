@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-11-2022 a las 15:15:41
+-- Tiempo de generación: 07-12-2022 a las 11:41:16
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 7.4.29
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `bd_restaurante`
+-- Base de datos: `2223_giraldocarlos`
 --
 CREATE DATABASE IF NOT EXISTS `2223_giraldocarlos` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `2223_giraldocarlos`;
@@ -63,9 +63,9 @@ CREATE TABLE `tbl_empleado` (
 --
 
 INSERT INTO `tbl_empleado` (`id_empleado`, `nom_empleado`, `ape_empleado`, `dni_empleado`, `password_empleado`, `fk_cargo_empleado`, `email_empleado`) VALUES
-(7, 'Sergi', 'Garcia', '47864649Q', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 1, ''),
-(9, 'Carlos', 'Piedras', '47864650V', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 1, 'carlos@gmail.com'),
-(10, 'Alejandro', 'Lay', '46785678F', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 2, '');
+(12, 'Sergi', 'Garcia', '33011587D', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 1, 'sgarcia@gmail.com'),
+(17, 'Carlos', 'Giraldo', '48068415W', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 2, 'cgiraldolozano@gmail.com'),
+(18, 'Ricardo', 'Durán', '32771997X', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 1, 'rduran@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -85,19 +85,7 @@ CREATE TABLE `tbl_incidencia` (
 --
 
 INSERT INTO `tbl_incidencia` (`id_inc`, `nom_inc`, `estado_inc`, `fk_mesa_inc`) VALUES
-(3, 'test', 0, 1),
-(4, 'test', 0, 1),
-(5, 'test', 0, 2),
-(6, 'test', 0, 1),
-(7, 'sdf', 0, 1),
-(8, 'sdf', 0, 1),
-(9, 'dfgf', 0, 2),
-(10, 'test', 0, 1),
-(11, 'test', 0, 2),
-(12, 'test', 0, 1),
-(13, 'test', 0, 1),
-(14, 'pata rota', 0, 1),
-(15, 'pata rota', 0, 1);
+(20, 'pata rota', 1, 23);
 
 -- --------------------------------------------------------
 
@@ -118,26 +106,24 @@ CREATE TABLE `tbl_mesa` (
 --
 
 INSERT INTO `tbl_mesa` (`id_mesa`, `num_mesa`, `estado_mesa`, `fk_num_sala`, `capacidad_mesa`) VALUES
-(1, 1, '0', 1, 4),
-(2, 2, '0', 1, 4),
 (3, 3, '0', 1, 6),
-(4, 4, '0', 2, 4),
-(5, 5, '0', 2, 8),
-(6, 10, '0', 3, 10),
-(7, 11, '0', 1, 8),
-(8, 8, '0', 1, 2),
-(9, 9, '0', 1, 2),
-(10, 10, '0', 1, 2),
-(11, 11, '0', 1, 2),
-(12, 12, '0', 1, 2),
-(13, 13, '0', 1, 4),
+(9, 9, '1', 1, 2),
 (14, 14, '0', 1, 4),
 (15, 15, '0', 1, 4),
 (16, 16, '0', 1, 4),
-(17, 17, '0', 1, 6),
 (18, 18, '0', 1, 6),
 (19, 19, '0', 1, 6),
-(20, 20, '0', 1, 6);
+(20, 20, '0', 1, 6),
+(23, 6, '2', 1, 2),
+(26, 1, '0', 1, 4),
+(27, 2, '0', 2, 2),
+(28, 4, '0', 1, 4),
+(30, 7, '0', 3, 10),
+(33, 5, '0', 2, 4),
+(34, 8, '0', 2, 4),
+(35, 10, '0', 2, 4),
+(36, 11, '0', 2, 6),
+(37, 12, '0', 2, 6);
 
 -- --------------------------------------------------------
 
@@ -150,7 +136,7 @@ CREATE TABLE `tbl_registro` (
   `fecha_entrada` datetime NOT NULL,
   `fecha_salida` datetime DEFAULT NULL,
   `id_mesa` int(11) NOT NULL,
-  `id_camarero` int(11) NOT NULL,
+  `id_camarero` int(11) DEFAULT NULL,
   `num_comensales` int(2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -159,27 +145,33 @@ CREATE TABLE `tbl_registro` (
 --
 
 INSERT INTO `tbl_registro` (`id_registro`, `fecha_entrada`, `fecha_salida`, `id_mesa`, `id_camarero`, `num_comensales`) VALUES
-(1, '2022-11-07 14:00:00', '2022-11-07 15:05:00', 1, 10, 4),
-(2, '2022-11-08 17:15:58', '2022-11-08 17:36:13', 1, 9, 2),
-(3, '2022-11-08 17:23:55', '2022-11-08 17:35:46', 1, 9, 2),
-(4, '2022-11-08 17:24:21', '2022-11-08 17:35:20', 1, 9, 2),
-(5, '2022-11-09 19:22:57', NULL, 1, 9, 1),
-(6, '2022-11-09 19:28:56', '2022-11-09 19:29:06', 1, 9, 1),
-(7, '2022-11-09 19:29:29', '2022-11-09 19:29:40', 1, 9, 1),
-(8, '2022-11-09 19:29:54', '2022-11-09 19:30:04', 1, 9, 1),
-(9, '2022-11-10 17:47:44', '2022-11-10 18:17:13', 1, 9, 2),
-(10, '2022-11-10 17:50:59', '2022-11-10 17:58:53', 2, 9, 2),
-(11, '2022-11-10 17:53:14', '2022-11-10 18:17:19', 3, 9, 2),
-(12, '2022-11-10 18:17:30', '2022-11-10 18:17:35', 1, 9, 1),
-(13, '2022-11-10 18:23:15', '2022-11-10 18:23:18', 1, 9, 2),
-(14, '2022-11-10 19:11:40', '2022-11-10 19:11:43', 1, 9, 2),
-(15, '2022-11-11 17:34:59', '2022-11-11 17:35:04', 1, 9, 2),
-(16, '2022-11-14 14:57:13', '2022-11-14 14:57:19', 1, 9, 4),
-(17, '2022-11-14 14:57:55', '2022-11-14 14:58:03', 1, 9, 2),
-(18, '2022-11-14 14:59:54', '2022-11-14 14:59:56', 1, 9, 1),
-(19, '2022-11-14 15:00:16', '2022-11-14 15:21:00', 1, 9, 2),
-(20, '2022-11-14 15:24:48', '2022-11-14 15:25:02', 1, 9, 2),
-(21, '2022-11-14 15:58:26', '2022-11-14 15:58:38', 1, 9, 2);
+(11, '2022-11-10 17:53:14', '2022-11-10 18:17:19', 3, NULL, 2),
+(24, '2022-11-29 16:10:30', '2022-11-29 16:33:55', 3, NULL, 2),
+(31, '2022-12-01 15:50:44', '2022-12-01 15:50:53', 26, NULL, 1),
+(33, '2022-12-07 11:40:20', NULL, 9, 17, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tbl_reserva`
+--
+
+CREATE TABLE `tbl_reserva` (
+  `id_reserva` int(11) NOT NULL,
+  `fk_mesa_reserva` int(11) NOT NULL,
+  `nombre_reserva` varchar(100) NOT NULL,
+  `comensales_reserva` int(2) NOT NULL,
+  `fecha_reserva` date NOT NULL,
+  `hora_inicio_reserva` time NOT NULL,
+  `hora_final_reserva` time NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `tbl_reserva`
+--
+
+INSERT INTO `tbl_reserva` (`id_reserva`, `fk_mesa_reserva`, `nombre_reserva`, `comensales_reserva`, `fecha_reserva`, `hora_inicio_reserva`, `hora_final_reserva`) VALUES
+(12, 14, 'Carlos', 4, '2022-12-08', '16:00:00', '16:30:00');
 
 -- --------------------------------------------------------
 
@@ -241,6 +233,13 @@ ALTER TABLE `tbl_registro`
   ADD KEY `id_camarero` (`id_camarero`);
 
 --
+-- Indices de la tabla `tbl_reserva`
+--
+ALTER TABLE `tbl_reserva`
+  ADD PRIMARY KEY (`id_reserva`),
+  ADD KEY `fk_mesa_reserva` (`fk_mesa_reserva`);
+
+--
 -- Indices de la tabla `tbl_sala`
 --
 ALTER TABLE `tbl_sala`
@@ -260,25 +259,31 @@ ALTER TABLE `tbl_cargo`
 -- AUTO_INCREMENT de la tabla `tbl_empleado`
 --
 ALTER TABLE `tbl_empleado`
-  MODIFY `id_empleado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_empleado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_incidencia`
 --
 ALTER TABLE `tbl_incidencia`
-  MODIFY `id_inc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_inc` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_mesa`
 --
 ALTER TABLE `tbl_mesa`
-  MODIFY `id_mesa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_mesa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_registro`
 --
 ALTER TABLE `tbl_registro`
-  MODIFY `id_registro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_registro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT de la tabla `tbl_reserva`
+--
+ALTER TABLE `tbl_reserva`
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_sala`
@@ -312,8 +317,14 @@ ALTER TABLE `tbl_mesa`
 -- Filtros para la tabla `tbl_registro`
 --
 ALTER TABLE `tbl_registro`
-  ADD CONSTRAINT `tbl_registro_ibfk_1` FOREIGN KEY (`id_camarero`) REFERENCES `tbl_empleado` (`id_empleado`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `tbl_registro_ibfk_2` FOREIGN KEY (`id_mesa`) REFERENCES `tbl_mesa` (`id_mesa`) ON UPDATE NO ACTION;
+  ADD CONSTRAINT `tbl_registro_ibfk_2` FOREIGN KEY (`id_mesa`) REFERENCES `tbl_mesa` (`id_mesa`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_registro_ibfk_3` FOREIGN KEY (`id_camarero`) REFERENCES `tbl_empleado` (`id_empleado`) ON DELETE SET NULL;
+
+--
+-- Filtros para la tabla `tbl_reserva`
+--
+ALTER TABLE `tbl_reserva`
+  ADD CONSTRAINT `tbl_reserva_ibfk_1` FOREIGN KEY (`fk_mesa_reserva`) REFERENCES `tbl_mesa` (`id_mesa`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
