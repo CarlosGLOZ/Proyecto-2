@@ -73,8 +73,11 @@ function modEmpleado() {
                     cerrarModales();
                 })
             } else {
+                error_devuelto = ajax.responseText.split(' - ')[1];
+                console.log(ajax.responseText);
                 Swal.fire({
-                    title: 'No se ha modificar crear el empleado',
+                    title: 'No se ha modificar el empleado',
+                    text: error_devuelto,
                     icon: 'error',
                 }).then((result) => {
                     listarEmpleados();

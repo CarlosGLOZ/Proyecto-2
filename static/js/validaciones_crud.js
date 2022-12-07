@@ -77,8 +77,6 @@ const form_modificar_empleado = document.getElementById('modal-form-ocupar');
 const boton_guardar_modificar = document.getElementById('modal-form-boton-mod-guardar');
 
 function validarFormularioModificarEmpleado() {
-    console.log(form_modificar_empleado);
-    console.log(boton_guardar_modificar)
 
     let val = true;
     for (let i = 0; i < form_modificar_empleado.length; i++) {

@@ -93,7 +93,7 @@ class Mesa
         }
 
         
-        $sql = $sql." ORDER BY ".BD['MESA']['NUMERO'].";";
+        $sql = $sql." ORDER BY ".BD['MESA']['CAPACIDAD']." ASC";
 
 
         $consulta = $pdo -> prepare($sql);

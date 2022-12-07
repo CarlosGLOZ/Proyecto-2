@@ -123,8 +123,7 @@ class Empleado {
     public static function modEmpleado($pdo, $params, $nueva_contra=false)
     {
         if ($nueva_contra) {
-            $sql = "UPDATE ".BD['EMPLEADO']['TABLA']."
-            SET ".BD['EMPLEADO']['DNI']." = :".BD['EMPLEADO']['DNI'].",
+            $sql = "UPDATE ".BD['EMPLEADO']['TABLA']." SET
             ".BD['EMPLEADO']['NOMBRE']." = :".BD['EMPLEADO']['NOMBRE'].",
             ".BD['EMPLEADO']['APELLIDO']." = :".BD['EMPLEADO']['APELLIDO'].",
             ".BD['EMPLEADO']['EMAIL']." = :".BD['EMPLEADO']['EMAIL'].",
@@ -132,8 +131,7 @@ class Empleado {
             ".BD['EMPLEADO']['CARGO']." = :".BD['EMPLEADO']['CARGO']."
             WHERE ".BD['EMPLEADO']['DNI']." = :prev_".BD['EMPLEADO']['DNI'].";";
         } else {
-            $sql = "UPDATE ".BD['EMPLEADO']['TABLA']."
-            SET ".BD['EMPLEADO']['DNI']." = :".BD['EMPLEADO']['DNI'].",
+            $sql = "UPDATE ".BD['EMPLEADO']['TABLA']." SET
             ".BD['EMPLEADO']['NOMBRE']." = :".BD['EMPLEADO']['NOMBRE'].",
             ".BD['EMPLEADO']['APELLIDO']." = :".BD['EMPLEADO']['APELLIDO'].",
             ".BD['EMPLEADO']['EMAIL']." = :".BD['EMPLEADO']['EMAIL'].",
@@ -147,5 +145,47 @@ class Empleado {
         // die();
 
         return $result;
+    }
+
+    public static function dniValido($pdo, $dni)
+    {
+        if (!validarDni($dni)) {
+            return false;
+        }
+
+        // Comprobar que no esté repetido
+        $sql = "SELECT COUNT(*) as cont FROM ".BD['EMPLEADO']['TABLA']." WHERE ".BD['EMPLEADO']['DNI']." = :dni";
+
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute(['dni' => $dni]);
+
+        $result = $consulta -> fetch(PDO::FETCH_ASSOC);
+
+        if ($result['cont'] > 1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static function emailValido($pdo, $email)
+    {
+        if (!validarEmail($email)) {
+            return false;
+        }
+        
+        // Comprobar que no esté repetido
+        $sql = "SELECT COUNT(*) as cont FROM ".BD['EMPLEADO']['TABLA']." WHERE ".BD['EMPLEADO']['EMAIL']." = :email";
+
+        $consulta = $pdo -> prepare($sql);
+        $consulta -> execute(['email' => $email]);
+
+        $result = $consulta -> fetch(PDO::FETCH_ASSOC);
+
+        if ($result['cont'] > 1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

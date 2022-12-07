@@ -24,7 +24,7 @@ foreach ($mesas as $mesa) {
     }
     if ($cont == 4) {
     $cont = 0;
-    echo "</div>$cont<div class='region'>";
+    echo "</div><div class='region'>";
     }
 
     echo "
@@ -41,14 +41,14 @@ foreach ($mesas as $mesa) {
     if ($mesa[BD['MESA']['ESTADO']] == 0) {
         echo "<button class='btn btn-outline-danger' onclick='abrirModalOcupado(".$mesa[BD['MESA']['ID']].")'>Ocupar</button> ";
         echo "<button class='btn btn-outline-warning' onclick='abrirModalMantenimiento(".$mesa[BD['MESA']['ID']].")'>Mantener</button>";
-        echo "<button class='btn btn-outline-dark' onclick='abrirModalReservar(".$mesa[BD['MESA']['ID']].")'>Reservar</button>";
+        // echo "<button class='btn btn-outline-dark' onclick='abrirModalReservar(".$mesa[BD['MESA']['ID']].")'>Reservar</button>";
     } elseif ($mesa[BD['MESA']['ESTADO']] == 1) {
         echo "<button class='btn btn-outline-success' onclick='abrirModalLiberar(".$mesa[BD['MESA']['ID']].")'>Liberar</button> ";
         echo "<button class='btn btn-outline-warning' onclick='abrirModalMantenimiento(".$mesa[BD['MESA']['ID']].")'>Mantener</button>";
     } elseif ($mesa[BD['MESA']['ESTADO']] == 2) {
         echo "<button class='btn btn-outline-danger' onclick='abrirModalOcupado(".$mesa[BD['MESA']['ID']].")'>Ocupar</button> ";
         echo "<button class='btn btn-outline-success' onclick='abrirModalLiberar(".$mesa[BD['MESA']['ID']].")'>Liberar</button>";
-        echo "<button class='btn btn-outline-dark' onclick='abrirModalReservar(".$mesa[BD['MESA']['ID']].")'>Reservar</button>";
+        // echo "<button class='btn btn-outline-dark' onclick='abrirModalReservar(".$mesa[BD['MESA']['ID']].")'>Reservar</button>";
         
     } elseif ($mesa[BD['MESA']['ESTADO']] == 3) {
         echo "<button class='btn btn-outline-success' onclick='abrirModalLiberar(".$mesa[BD['MESA']['ID']].")'>Liberar</button>";

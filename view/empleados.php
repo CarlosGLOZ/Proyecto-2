@@ -105,8 +105,11 @@
         <form action="../proc/cambiar_estado_mesa.php" method="post" class="modal-form" id='modal-form-ocupar'>
             <input type="hidden" name="prev_<?php echo ADD_FORM['EMPLEADO']['DNI']?>">
 
-            <h3 for="<?php echo ADD_FORM['EMPLEADO']['DNI']?>"><?php echo VARNAMES_QUERY_EMPLEADOS['DNI'];?></h3>
-            <input type="text" name="<?php echo ADD_FORM['EMPLEADO']['DNI']?>" oninput="validarFormularioModificarEmpleado()">
+            <!-- Poder modificar el dni da algunos problemas por que lo estoy usando como key a la ohra de ir a modificar al empleado -->
+            <!-- Para solucionar esto, tendría que cambiar el input hidden para que usara el ID del registro en vez del DNI -->
+            <!-- Y cambiar como se usa en el codigo. No voy a tener tiempo de hacerlo, así que se queda así -->
+            <!-- <h3 for="<?php //echo ADD_FORM['EMPLEADO']['DNI']?>"><?php //echo VARNAMES_QUERY_EMPLEADOS['DNI'];?></h3>
+            <input type="text" name="<?php //echo ADD_FORM['EMPLEADO']['DNI']?>" oninput="validarFormularioModificarEmpleado()"> -->
 
             
             <h3 for="<?php echo ADD_FORM['EMPLEADO']['NOMBRE']?>"><?php echo VARNAMES_QUERY_EMPLEADOS['NOMBRE'];?></h3>

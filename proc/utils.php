@@ -131,3 +131,23 @@ function getHorasActivas()
 
     return $horas;
 }
+
+function validarDni($dni)
+{
+    $letter = substr($dni, -1);
+    $numbers = substr($dni, 0, -1);
+    
+    if (substr("TRWAGMYFPDXBNJZSQVHLCKE", $numbers%23, 1) == $letter && strlen($letter) == 1 && strlen ($numbers) == 8 ){
+        return true;
+    }
+    return false;
+}
+
+function validarEmail($email)
+{
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    } else {
+        return true;
+    }
+}
